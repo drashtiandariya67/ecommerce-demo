@@ -2,9 +2,8 @@
 import { Product } from "@/types";
 import LazyImage from "../LazyImage/LazyImage";
 import { useCart } from "@/context/CartContext";
-import { useState } from "react";
 import Button from "../Button/Button";
-import Alert from "../Alert/Alert";
+import toast from "react-hot-toast";
 
 interface ProductCardProps {
   product: Product;
@@ -12,16 +11,14 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart } = useCart();
-  const [toast, setToast] = useState("");
 
   const handleAddToCart = () => {
     addToCart(product);
-    setToast(`${product.name} added to cart`);
+    toast.success(`${product.name} added to cart!`);
   };
 
   return (
     <div className="border border-gray-500 rounded-xl shadow-sm bg-white p-4 flex flex-col items-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-      {toast && <Alert type="success">{toast}</Alert>}
       <LazyImage
         src={product.image}
         alt={product.name}
