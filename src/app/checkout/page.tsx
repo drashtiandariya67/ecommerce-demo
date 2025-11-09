@@ -77,7 +77,6 @@ const CheckoutPage: React.FC = () => {
       if (data.generatedCoupon) setNewCoupon(data.generatedCoupon);
       setOrderPlaced(true);
       clearCart();
-      setTimeout(() => router.push("/"), 5000);
     } catch {
       setLoadingCheckout(false);
       setMsg({ type: "error", text: "Network error, please try again." });
@@ -90,7 +89,7 @@ const CheckoutPage: React.FC = () => {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-black">Checkout</h1>
           <Button type="button" variant="outline" onClick={() => router.push("/")}>
-            {'<'} Back
+           {orderPlaced ? "Go to Home" : "< Back"}
           </Button>
         </div>
         <form onSubmit={handleCheckout} className="space-y-6">
