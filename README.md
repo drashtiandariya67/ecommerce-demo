@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# E-commerce Assignment
 
-## Getting Started
+A simple e-commerce backend with checkout and discount functionality. Built with **Next.js**, **TypeScript**, and **in-memory store**.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Add items to cart and checkout.
+- Apply discount codes on checkout.
+- Generate a discount code for every **Nth order**. (As an Example set as 5th)
+- Admin stats: total items, total purchase, discount codes, total discount amount.
+- Fully tested with **Vitest**.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Setup
 
-## Learn More
+1. Clone the repo:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   git clone <your-repo-url>
+   cd ecommerce-demo
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Install dependencies:
+   npm install
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Run development server:
+   npm run dev
 
-## Deploy on Vercel
+4. Run tests to verify functionality:
+   npm run test
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+API
+POST /api/checkout
+Request body example:
+{
+"userId": "user-123",
+"items": [
+{ "id": "p1", "name": "Product 1", "price": 100, "quantity": 2 }
+],
+"discountCode": "SAVE10" // optional
+}
+Response example:
+{
+"success": true,
+"order": {
+"id": "order-xyz",
+"userId": "user-123",
+"items": [
+{ "id": "p1", "name": "Product 1", "price": 100, "quantity": 2 }
+],
+"subtotal": 200,
+"discountCode": "SAVE10",
+"discountAmount": 20,
+"total": 180,
+"createdAt": "2025-11-09T12:00:00.000Z"
+},
+"generatedCoupon": {
+"code": "SAVE10-XYZ123",
+"percentage": 10,
+"used": false
+}
+}
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    Admin Stats API
+        GET /api/admin/stats
+        Returns overall store statistics:
+        Example response:
+            {
+            "totalOrders": 10,
+            "totalItems": 45,
+            "totalPurchase": 4500,
+            "discounts": [
+                { "code": "UBX-ABC123", "percentage": 10, "used": true }
+            ],
+            "totalDiscountAmount": 400,
+            "usedDiscountsCount": 4
+            }
+
+Testing
+Run unit tests with Vitest: npm run test
+Tests cover:
+Order creation
+Discount application
+Nth order discount generation
+Checkout API behavior
+
+Notes
+#All data is stored in-memory, so server restart will reset all orders and discounts.
+#Discount codes apply to the entire order, not individual items.
+#Every Nth order generates a new discount code automatically.
