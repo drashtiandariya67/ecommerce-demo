@@ -31,10 +31,10 @@ export function createOrder(userId: string, items: CartItem[], subtotal: number,
 
 export function tryApplyDiscount(code?: string | null) {
   if (!code) return { valid: false, percentage: 0, reason: "no-code" };
-  const d = discounts.find((x) => x.code === code);
-  if (!d) return { valid: false, percentage: 0, reason: "not-found" };
-  if (d.used) return { valid: false, percentage: 0, reason: "used" };
-  return { valid: true, percentage: d.percentage, discount: d };
+  const discount = store.discountCodes.find((d) => d.code === code);
+  if (!discount) return { valid: false, percentage: 0, reason: "not-found" };
+  if (discount.used) return { valid: false, percentage: 0, reason: "used" };
+  return { valid: true, percentage: discount.percentage, discount };
 }
 
 export function markDiscountUsed(code: string) {
@@ -50,11 +50,16 @@ export function markDiscountUsed(code: string) {
  * Returns the generated Discount or null.
  */
 export function maybeGenerateDiscount() {
-  if (orders.length > 0 && orders.length % NTH_ORDER_FOR_DISCOUNT === 0) {
+  if (store.orders.length > 0 && store.orders.length % NTH_ORDER_FOR_DISCOUNT === 0) {
     const code = `UBX-${Date.now().toString(36).toUpperCase()}`;
-    const d: Discount = { code, percentage: 10, used: false, createdAt: new Date().toISOString() };
-    discounts.push(d);
-    return d;
+    const discount = {
+      code,
+      percentage: 10,
+      used: false,
+      createdAt: new Date().toISOString(),
+    };
+    store.discountCodes.push(discount);
+    return discount;
   }
   return null;
 }
